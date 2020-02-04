@@ -3,3 +3,13 @@
     align-items: center;
     text-align: center;
 }
+li{
+    list-style: none;
+}
+
+#futureForcast .col{
+    background-color: blue;
+    margin: 5px;
+    color: white;
+
+}

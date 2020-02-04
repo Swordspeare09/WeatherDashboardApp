@@ -21,15 +21,16 @@
         <div class="col-md-4">
         <p>Search for City:</p>
         <div class="input-group flex-nowrap">
-            <input type="text" class="form-control" placeholder="Enter a City" aria-label="Username"
+            <input type="text"  id ="search-request" class="form-control" placeholder="Enter a City" aria-label="Username"
                 aria-describedby="addon-wrapping">
                 <button type="button" class="btn btn-primary"id="search-button"><i class="fas fa-search"></i></button>
         </div>
 
         <section id="previous-searches">
+            <ul>
             <!--Inserts search from local storage-->
 
-
+            </ul>
 
         </section>
         
@@ -38,35 +39,51 @@
             <div class="row">
             <p>
                 <ul id="currentForcast">
-                    <!--insert-->
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                    <!--insert Searched City's current forcast-->
+                    <h1 id="searched-city"></h1>
+                    <li id="main-temp"></li>
+                    <li id ="main-humidity"></li>
+                    <li id ="main-windspeed"></li>
+                    <li id="main-UV"></li>
 
                 </ul>
             </p>
 
+            <li></li>
+            <li></li>
+            <li></li>
+
             </div>
             <div class="row" id="futureForcast">
                 <div class = "col">
-                    dfadfafa
+                    <ul id="day1">
+
+                    </ul>
+                </div>
+                <div class = "col" >
+                    <ul id="day2">
+                    
+                    </ul>
+                </div>
+                <div class = "col" >
+                    <ul id="day3">
+                    
+                    </ul>
+                </div>
+                <div class = "col" >
+                    <ul id="day4">
+                    
+                    </ul>
                 </div>
                 <div class = "col">
-                    dhaslhda
-                </div>
-                <div class = "col">
-                    fdfdsfds
-                </div>
-                <div class = "col">
-                    fdsfds
-                </div>
-                <div class = "col">
-                    dsfsfd
+                    <ul id="day5">
+                    
+                    </ul>
                 </div>
             
             </div>
         </div>
-    
+        <script src="https://code.jquery.com/jquery-3.4.1.js" type="text/javascript"></script>
+        <script src="script.js"></script>
 </body>
 </html>
