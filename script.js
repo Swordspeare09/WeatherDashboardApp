@@ -51,9 +51,9 @@ $(document).ready(function() {
 
 
       $("#searched-city").text(response.city.name);
-      $("#main-temp").text(response.list[0].main.temp);
-      $("#main-humidity").text(response.list[0].main.humidity);
-      $("#main-windspeed").text(response.list[0].wind.speed);
+      $("#main-temp").text("Temp: "+ response.list[0].main.temp);
+      $("#main-humidity").text("Humidty: "+ response.list[0].main.humidity);
+      $("#main-windspeed").text("Wind Speed"+ response.list[0].wind.speed);
 
       var citylat = response.city.coord.lat;
       var citylong = response.city.coord.lon;
@@ -66,7 +66,7 @@ $(document).ready(function() {
         method: "GET"
       }).then(function(response){
 
-        $("#main-UV").text(response.value)
+        $("#main-UV").text("UV level: " + response.value)
 
       });
 
@@ -176,9 +176,9 @@ $(document).ready(function() {
 
 
       $("#searched-city").text(response.city.name);
-      $("#main-temp").text(response.list[0].main.temp);
-      $("#main-humidity").text(response.list[0].main.humidity);
-      $("#main-windspeed").text(response.list[0].wind.speed);
+      $("#main-temp").text("Temp: " + response.list[0].main.temp);
+      $("#main-humidity").text("Humidty: " + response.list[0].main.humidity);
+      $("#main-windspeed").text("Wind Speed" + response.list[0].wind.speed);
 
       var citylat = response.city.coord.lat;
       var citylong = response.city.coord.lon;
@@ -191,7 +191,7 @@ $(document).ready(function() {
         method: "GET"
       }).then(function (response) {
 
-        $("#main-UV").text(response.value)
+        $("#main-UV").text("UV level: " + response.value)
 
       });
 
