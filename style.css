@@ -1,15 +1,78 @@
-#nav-header{
-    align-content: center;
-    align-items: center;
+*{
+font-family: 'Poppins', sans-serif;
+}
+#title{
+    float: none;
+    display: inline-block;
     text-align: center;
-}
-li{
-    list-style: none;
-}
-
-#futureForcast .col{
-    background-color: blue;
-    margin: 5px;
     color: white;
+}
 
+#navHeader{
+    justify-content: center;
+}
+#main-container{
+    width: 70%;
+}
+#search-section{
+    width: 20%;
+}
+
+.history-container{
+    justify-content: center;
+}
+
+.weather-Color{
+    background-color: #629cda;
+}
+
+.history-button{
+    display: block;
+    justify-content: center;
+    margin: 3px;
+    color: white;
+    width: 100%;
+}
+
+[class^="col-"]{
+    border-radius: 4px;
+    background-color: #629cda;
+    margin: 5px;
+}
+
+#main-jumbo{
+    padding: 2%;
+    width: 100%;
+}
+
+.forecast-card{
+    font-size: 13px;
+    color: white;
+}
+
+@media only screen and (max-width: 1260px) {
+    #main-container{
+        width: 90%;
+    }
+    #search-section{
+        width: 90%;
+    }
+}
+
+.favorable{
+    background-color: rgba(6, 185, 6, 0.616);
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.moderate{
+    background-color: yellow;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.severe{
+    background-color: red;
+    padding: 2px;
+    border-radius: 2px;
 }

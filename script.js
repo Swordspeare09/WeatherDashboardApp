@@ -1,264 +1,181 @@
-//Variable array created to hold the past searches name
-var searchResultsArray = [];
+var url1 = "https://api.openweathermap.org/data/2.5/forecast?q=";
+var url2 = "&APPID=" + config.myKey;
 
-$(document).ready(function() {
 
-  displayPriorSearches();
 
-  function displayPriorSearches() {
-    amendingPriorList();
+init();
 
-  if(localStorage.pastSearches)
-  {
-    searchResultsArray = JSON.parse(localStorage.pastSearches);
-  }
-
-  if(searchResultsArray.length > 0)
-  {
-    for (var i = 0; i < searchResultsArray.length; i++)
-    {
-      var $pastSearchResult = $(`<li><button class="priorResultButton">${searchResultsArray[i]}</button></li>`)
-      $("#previous-searches").append($pastSearchResult);
+//initialize website by applying history if it exists
+function init() {
+  setHistoryButtons();
+  if (localStorage.history) {
+    var temp = JSON.parse(localStorage.history);
+    if (temp.length !== 0) {
+      $("#main-jumbo").html(``);
+      setForecast(temp[0]);
     }
   }
+}
 
+//Add a new input to the history array
+function historyUpdate(input) {
+  if (!localStorage.history) {
+    localStorage.history = JSON.stringify([]);
+  }
+  var temp = JSON.parse(localStorage.history);
+
+  if (temp.length === 8) {
+    temp.pop();
   }
 
-  function amendingPriorList() {
-    var priorUL = document.getElementById("previous-searches");
-    while (priorUL.firstChild) priorUL.removeChild(priorUL.firstChild);
+  if (temp.indexOf(input) !== -1) {
+    return;
   }
 
-  //Start of the on click event listener
-  $("#search-button").on("click", function() {
+  temp.unshift(input);
 
-    var cityName = $("#search-request").val();
+  localStorage.history = JSON.stringify(temp);
 
-    //I thought you guys were supposed to show us a way to hide our key
-    var APIKey = "4a85432182e7647448add485a1145d3d";
+  setHistoryButtons();
 
-    var searchURL =
-      "https://api.openweathermap.org/data/2.5/forecast?q=" +
-      cityName +
-      "&units=imperial&appid=" +
-      APIKey;
+}
 
-    
-    $.ajax({
-      url: searchURL,
-      method: "GET"
-    }).then(function(response) {
+//reset the history buttons
+function setHistoryButtons() {
+  if (!localStorage.history) {
+    return;
+  }
 
+  var temp = JSON.parse(localStorage.history);
 
-      $("#searched-city").text(response.city.name);
-      $("#main-temp").text("Temp: "+ response.list[0].main.temp);
-      $("#main-humidity").text("Humidty: "+ response.list[0].main.humidity);
-      $("#main-windspeed").text("Wind Speed"+ response.list[0].wind.speed);
+  $(".history-container").html(``);
 
-      var citylat = response.city.coord.lat;
-      var citylong = response.city.coord.lon;
+  temp.forEach(element => {
+    $(".history-container").append(`<button type="button" class="btn weather-Color history-button" data-city="${element}">${element}</button>`);
+  })
+}
 
-      var uvUrl ="https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey +"&lat="+ citylat + "&lon="+citylong+ "&appid=" + APIKey;
+//Set the html for the bug container
+function setForecast(input) {
+  var queryUrl = url1 + input + url2;
 
-      //Created another call for the UV index value with updated call URL
-      $.ajax({
-        url: uvUrl,
-        method: "GET"
-      }).then(function(response){
+  $.ajax({
+    url: queryUrl,
+    method: "GET",
+    error: function () { errorResponse(input) }
+  }).then(function (response) {
 
-        $("#main-UV").text("UV level: " + response.value)
+    //get latitude and longitude for later
+    var lat = parseInt(response.city.coord.lat).toFixed(2);
+    var lon = parseInt(response.city.coord.lon).toFixed(2);
 
-      });
+    var uviUrl = "https://api.openweathermap.org/data/2.5/uvi?APPID=ad8a0b856d591a7eb8795aaac18d08bc&lat=" + lat + "&lon=" + lon;
 
-      //checks for prior stored values and removes them if exists
+    //calculate fahrenheit from kelvin
+    var fahren = (parseInt(response.list[0].main.temp) - 273.15) * (9 / 5) + 32;
+    fahren = fahren.toFixed(0);
 
-      var priorUL1 = document.getElementById("day1");
-      if ((priorUL1.childNodes.length != 0))
-      {
-      while (priorUL1.firstChild) priorUL1.removeChild(priorUL1.firstChild);
-      }
-
-      var priorUL2 = document.getElementById("day2");
-      if ((priorUL2.childNodes.length != 0)) {
-        while (priorUL2.firstChild) priorUL2.removeChild(priorUL2.firstChild);
-      }
-
-      var priorUL3 = document.getElementById("day3");
-      if ((priorUL3.childNodes.length != 0)) {
-        while (priorUL3.firstChild) priorUL3.removeChild(priorUL3.firstChild);
-      }
-
-      var priorUL4 = document.getElementById("day4");
-      if ((priorUL4.childNodes.length != 0)) {
-        while (priorUL4.firstChild) priorUL4.removeChild(priorUL4.firstChild);
-      }
-
-      var priorUL5 = document.getElementById("day5");
-      if ((priorUL5.childNodes.length != 0)) {
-        while (priorUL5.firstChild) priorUL5.removeChild(priorUL5.firstChild);
-      }
-      
-
-
-
-      //Start of 5 day forcast
-      var $day1Forcast = $(`<li>${response.list[7].main.temp}</li>
-            <li>${response.list[7].main.humidity}</li>
-            <li>${response.list[7].wind.speed}</li>`);
-
-      $("#day1").append($day1Forcast);
-
-      var $day2Forcast = $(`<li>${response.list[15].main.temp}</li>
-            <li>${response.list[15].main.humidity}</li>
-            <li>${response.list[15].wind.speed}</li>`);
-
-      $("#day2").append($day2Forcast);
-
-      var $day3Forcast = $(`<li>${response.list[23].main.temp}</li>
-            <li>${response.list[23].main.humidity}</li>
-            <li>${response.list[23].wind.speed}</li>`);
-
-      $("#day3").append($day3Forcast);
-
-      var $day4Forcast = $(`<li>${response.list[31].main.temp}</li>
-            <li>${response.list[31].main.humidity}</li>
-            <li>${response.list[31].wind.speed}</li>`);
-
-      $("#day4").append($day4Forcast);
-
-      var $day5Forcast = $(`<li>${response.list[39].main.temp}</li>
-            <li>${response.list[39].main.humidity}</li>
-            <li>${response.list[39].wind.speed}</li>`);
-
-      $("#day5").append($day5Forcast);
-
-
-      updatePriors();
-      //Storing searched City Name to the local storage
-      function updatePriors() {
-
-        //var priorUL = document.getElementById("previous-searches");
-       // while (priorUL.firstChild) priorUL.removeChild(priorUL.firstChild);
+    //set weather on main jumbotron
+    $("#main-jumbo").html(`
+            <h1 class="display-8">${response.city.name} (${moment().format("l")})
+            <img src="https://openweathermap.org/img/w/${response.list[0].weather[0].icon}.png" alt="${response.list[0].weather[0].description}"></h1>
+            <p>Temperature: ${fahren} °F</p>
+            <p>Humidity: ${response.list[0].main.humidity}%</p>
+            <p>Wind Speed: ${response.list[0].wind.speed} MPH</p>
+            <p id="uv-index"></p>
         
-       var priorSearch = response.city.name;
+        `);
 
-      searchResultsArray.push(priorSearch);
+    //Go through the rest
+    for (var i = 7, cardIndex = 0; i < parseInt(response.cnt); i += 8, cardIndex++) {
+      var $tempCard = $($("#forecast").children()[cardIndex]);
 
-       localStorage.pastSearches = JSON.stringify(searchResultsArray);
+      //calculate fahrenheit from kelvin
+      fahren = (parseInt(response.list[i].main.temp) - 273.15) * (9 / 5) + 32;
+      fahren = fahren.toFixed(2);
 
-       amendingPriorList();
-       displayPriorSearches();
-      }
+      //set html
+      $tempCard.html(`
+            
+                <h5 style="color: white;">${moment().add((cardIndex + 1), 'days').format('l')}</h5>
+                <p><img src="https://openweathermap.org/img/w/${response.list[i].weather[0].icon}.png" alt=
+                ${response.list[i].weather[0].description}"></p>
+                <p class="forecast-card">Temperature: ${fahren} °F</p>
+                <p class="forecast-card">Humidity: ${response.list[i].main.humidity}%</p>
+            
+            `);
+    }
 
-    });
-
-  });
-
-  //This on click event listner uses the exact same funtions as the Search Bar
-  $(".priorResultButton").on("click", function () {
-
-    var cityName = $(this).text();
-
-    //I thought you guys were supposed to show us a way to hide our key
-    var APIKey = "4a85432182e7647448add485a1145d3d";
-
-    var searchURL =
-      "https://api.openweathermap.org/data/2.5/forecast?q=" +
-      cityName +
-      "&units=imperial&appid=" +
-      APIKey;
+    //set forecast title
+    $("#forecast-title").html(`<h3>5-Day Forecast:</h3>`);
 
 
+    //get uv index
     $.ajax({
-      url: searchURL,
+      url: uviUrl,
       method: "GET"
     }).then(function (response) {
-
-
-      $("#searched-city").text(response.city.name);
-      $("#main-temp").text("Temp: " + response.list[0].main.temp);
-      $("#main-humidity").text("Humidty: " + response.list[0].main.humidity);
-      $("#main-windspeed").text("Wind Speed" + response.list[0].wind.speed);
-
-      var citylat = response.city.coord.lat;
-      var citylong = response.city.coord.lon;
-
-      var uvUrl = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey + "&lat=" + citylat + "&lon=" + citylong + "&appid=" + APIKey;
-
-      //Created another call for the UV index value with updated call URL
-      $.ajax({
-        url: uvUrl,
-        method: "GET"
-      }).then(function (response) {
-
-        $("#main-UV").text("UV level: " + response.value)
-
-      });
-
-      //checks for prior stored values and removes them if exists
-
-      var priorUL1 = document.getElementById("day1");
-      if ((priorUL1.childNodes.length != 0)) {
-        while (priorUL1.firstChild) priorUL1.removeChild(priorUL1.firstChild);
+      var uvi = parseFloat(response.value);
+      var severity = "favorable";
+      if (uvi > 6) {
+        severity = "severe";
+      }
+      else if (uvi > 3) {
+        severity = "moderate";
       }
 
-      var priorUL2 = document.getElementById("day2");
-      if ((priorUL2.childNodes.length != 0)) {
-        while (priorUL2.firstChild) priorUL2.removeChild(priorUL2.firstChild);
-      }
-
-      var priorUL3 = document.getElementById("day3");
-      if ((priorUL3.childNodes.length != 0)) {
-        while (priorUL3.firstChild) priorUL3.removeChild(priorUL3.firstChild);
-      }
-
-      var priorUL4 = document.getElementById("day4");
-      if ((priorUL4.childNodes.length != 0)) {
-        while (priorUL4.firstChild) priorUL4.removeChild(priorUL4.firstChild);
-      }
-
-      var priorUL5 = document.getElementById("day5");
-      if ((priorUL5.childNodes.length != 0)) {
-        while (priorUL5.firstChild) priorUL5.removeChild(priorUL5.firstChild);
-      }
-
-
-
-
-      //Start of 5 day forcast
-      var $day1Forcast = $(`<li>${response.list[7].main.temp}</li>
-            <li>${response.list[7].main.humidity}</li>
-            <li>${response.list[7].wind.speed}</li>`);
-
-      $("#day1").append($day1Forcast);
-
-      var $day2Forcast = $(`<li>${response.list[15].main.temp}</li>
-            <li>${response.list[15].main.humidity}</li>
-            <li>${response.list[15].wind.speed}</li>`);
-
-      $("#day2").append($day2Forcast);
-
-      var $day3Forcast = $(`<li>${response.list[23].main.temp}</li>
-            <li>${response.list[23].main.humidity}</li>
-            <li>${response.list[23].wind.speed}</li>`);
-
-      $("#day3").append($day3Forcast);
-
-      var $day4Forcast = $(`<li>${response.list[31].main.temp}</li>
-            <li>${response.list[31].main.humidity}</li>
-            <li>${response.list[31].wind.speed}</li>`);
-
-      $("#day4").append($day4Forcast);
-
-      var $day5Forcast = $(`<li>${response.list[39].main.temp}</li>
-            <li>${response.list[39].main.humidity}</li>
-            <li>${response.list[39].wind.speed}</li>`);
-
-      $("#day5").append($day5Forcast);
-
-
-
-
+      $("#uv-index").html(`uv index: <span class="${severity}">${uvi}</span>`);
     });
   });
+}
+
+//handles when something not in the api is searched
+function errorResponse(input) {
+
+  //delete the broken search from history
+  var temp = JSON.parse(localStorage.history);
+  temp.splice(temp.indexOf(input), 1);
+  localStorage.history = JSON.stringify(temp);
+
+  //reset the history buttons
+  setHistoryButtons();
+
+  //put an error message in the main jumbotron
+  $("#main-jumbo").html(`
+    
+        <h1 class="display-8">The city you searched did not give a result. Correct your search and try again.</h1>
+    
+    `);
+
+  $("#forecast-title").html(``);
+
+  //empty the forecast cards
+  for (var cardIndex = 0; cardIndex < 5; cardIndex++) {
+    var $tempCard = $($("#forecast").children()[cardIndex]);
+
+    //set html
+    $tempCard.html(``);
+  }
+
+
+}
+
+function searchHandler() {
+  var city = $(".input-text").val();
+  $(".input-text").val("");
+  if (city.trim() !== "") {
+    historyUpdate(city);
+    setForecast(city);
+  }
+}
+
+//search button handler
+$("#search-button").on("click", searchHandler);
+
+//hisory button handler
+$(".history-container").on("click", function (event) {
+  var $element = $(event.target);
+  if ($element.hasClass("history-button")) {
+    setForecast($element.text());
+  }
 });
