@@ -33,11 +33,11 @@ To get a local copy up and running follow these simple steps that follow.
 
 ### Prerequisites
 
-This program will require an personal Api key from https://openweathermap.org/ .
+This program will require an personal Api key from https://openweathermap.org/ . You will need to create an account and sign up for a free API key to use for your own application. Instructions are on https://openweathermap.org/api .
 
 ### Installation
  
-No installation is required.
+No installation is required. However after you receive your own API key, you may replace it into the appropriate in the appropriate place in the script.js file or import from another js file to use. 
 
 
 ## Usage

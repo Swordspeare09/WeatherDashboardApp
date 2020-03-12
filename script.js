@@ -1,4 +1,5 @@
 var url1 = "https://api.openweathermap.org/data/2.5/forecast?q=";
+//Imported from external js file to hide api key from github
 var url2 = "&APPID=" + config.myKey;
 
 
