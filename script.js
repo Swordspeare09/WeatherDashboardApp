@@ -1,10 +1,7 @@
-var url1 = "https://api.openweathermap.org/data/2.5/forecast?q=";
+var URL = "https://api.openweathermap.org/data/2.5/forecast?q=";
 //Imported from external js file to hide api key from github
-var url2 = "&APPID=" + config.myKey;
+var Key = "&APPID=" + config.myKey;
 
-
-
-init();
 
 //initialize website by applying history if it exists
 function init() {
@@ -58,7 +55,7 @@ function setHistoryButtons() {
 
 //Set the html for the bug container
 function setForecast(input) {
-  var queryUrl = url1 + input + url2;
+  var queryUrl = URL + input + Key;
 
   $.ajax({
     url: queryUrl,
@@ -180,3 +177,7 @@ $(".history-container").on("click", function (event) {
     setForecast($element.text());
   }
 });
+
+
+//Starts initial generation of past searches in local storage
+init();
