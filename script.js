@@ -1,6 +1,6 @@
 var URL = "https://api.openweathermap.org/data/2.5/forecast?q=";
 //Imported from external js file to hide api key from github
-var Key = "&APPID=" + config.myKey;
+var Key = "&APPID=" + '4a85432182e7647448add485a1145d3d';
 
 
 //initialize website by applying history if it exists
